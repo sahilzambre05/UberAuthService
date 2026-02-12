@@ -15,7 +15,12 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/signup/*").permitAll())
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/signup/*").permitAll()
+                        .requestMatchers("/api/v1/auth/signin/*").permitAll()
+                )
                 .build();
     }
 
