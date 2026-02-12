@@ -18,6 +18,11 @@ import java.util.List;
 public class Passenger extends BaseModel{
     private String name;
 
+    private String email;
+
+    private String password;
+
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "passenger")
     @Builder.Default
