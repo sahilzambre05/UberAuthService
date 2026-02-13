@@ -1,21 +1,33 @@
 package com.example.UberServiceAuth.controllers;
 
 
+import com.example.UberServiceAuth.dto.AuthRequestDto;
 import com.example.UberServiceAuth.dto.PassengerDto;
 import com.example.UberServiceAuth.dto.PassengerSignupRequestDto;
 import com.example.UberServiceAuth.services.AuthService;
+import com.example.UberServiceAuth.services.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private AuthService authService;
+    private final AuthService authService;
 
-    private AuthController(AuthService authService){
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtService jwtService;
+
+    private AuthController(AuthService authService,AuthenticationManager authenticationManager,JwtService jwtService){
         this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/signup/passenger")
@@ -25,10 +37,17 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/signin/passenger")
-    public ResponseEntity<?> signIn(){
+    @PostMapping("/signin/passenger")
+    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto) {
+        System.out.println("Request received " + authRequestDto.getEmail() + " " + authRequestDto.getPassword());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword()));
+        if(authentication.isAuthenticated()) {
+            String jwtToken = jwtService.createToken(authRequestDto.getEmail());
 
-        return new ResponseEntity<>(10, HttpStatus.CREATED);
+            return new ResponseEntity<>(jwtToken, HttpStatus.OK);
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 
 }
