@@ -7,8 +7,11 @@ import com.example.UberServiceAuth.dto.PassengerDto;
 import com.example.UberServiceAuth.dto.PassengerSignupRequestDto;
 import com.example.UberServiceAuth.services.AuthService;
 import com.example.UberServiceAuth.services.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -46,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin/passenger")
-    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response) {
+    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto, HttpServletRequest request,HttpServletResponse response) {
         System.out.println("Request received " + authRequestDto.getEmail() + " " + authRequestDto.getPassword());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword()));
         if(authentication.isAuthenticated()) {
@@ -64,6 +67,14 @@ public class AuthController {
         } else {
             throw new UsernameNotFoundException("User not found");
         }
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<?> validate(HttpServletRequest request){
+        for(Cookie cookie : request.getCookies()){
+            System.out.println(cookie.getName()+" "+cookie.getValue());
+        }
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
 }
