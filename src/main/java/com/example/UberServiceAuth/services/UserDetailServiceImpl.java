@@ -1,7 +1,7 @@
 package com.example.UberServiceAuth.services;
 
+import com.example.UberEntityService.models.Passenger;
 import com.example.UberServiceAuth.helpers.AuthPassengerDetails;
-import com.example.UberServiceAuth.models.Passenger;
 import com.example.UberServiceAuth.repositories.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

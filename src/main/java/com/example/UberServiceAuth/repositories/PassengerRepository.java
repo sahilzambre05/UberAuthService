@@ -1,6 +1,6 @@
 package com.example.UberServiceAuth.repositories;
 
-import com.example.UberServiceAuth.models.Passenger;
+import com.example.UberEntityService.models.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
